@@ -65,6 +65,7 @@ namespace DiscordStats
                         }
                     }
                     int aantalOnline = ((Newtonsoft.Json.Linq.JArray)resultJson.members).Count - aantalBots;
+                    aantalBots = 0;
                     UpdateData(aantalOnline);
                     Console.WriteLine($"{aantalOnline} - {DateTime.Now}");
                 }
