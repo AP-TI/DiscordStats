@@ -6,12 +6,14 @@ using Newtonsoft.Json;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using MySql.Data.Common;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace DiscordStats
 {
     public class TelOnline
     {
         public Config Config { get; set; }
+        private int aantalBots = 0;
         public TelOnline(Config config)
         {
             Config = config;
@@ -46,7 +48,23 @@ namespace DiscordStats
                 {
                     result = client.DownloadString("https://discordapp.com/api/servers/" + Config.ServerID + "/widget.json?date="+DateTime.Now);
                     dynamic resultJson = JsonConvert.DeserializeObject(result);
-                    int aantalOnline = ((Newtonsoft.Json.Linq.JArray)resultJson.members).Count - Config.AantalBots;
+                    Newtonsoft.Json.Linq.JArray jArray = (Newtonsoft.Json.Linq.JArray)resultJson.members;
+                    foreach(dynamic item in jArray)
+                    {
+                        try
+                        {
+                            if (item.bot == "true")
+                            {
+                                aantalBots++;
+                            }
+
+                        }
+                        catch(RuntimeBinderException)
+                        {
+                            Console.WriteLine(item.username + "geen bot");
+                        }
+                    }
+                    int aantalOnline = ((Newtonsoft.Json.Linq.JArray)resultJson.members).Count - aantalBots;
                     UpdateData(aantalOnline);
                     Console.WriteLine($"{aantalOnline} - {DateTime.Now}");
                 }

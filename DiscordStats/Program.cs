@@ -28,9 +28,7 @@ namespace DiscordStats
                 Console.WriteLine();
                 Console.Write("Geef discord server ID: ");
                 string discordServerID = Console.ReadLine();
-                Console.Write("Geef aantal bots: ");
-                int aantalBots = int.Parse(Console.ReadLine());
-                config = new Config($"Server={serverIP};Database={databaseNaam};Uid={uid};Pwd={wachtwoord};", discordServerID, aantalBots);
+                config = new Config($"Server={serverIP};Database={databaseNaam};Uid={uid};Pwd={wachtwoord};", discordServerID);
                 string configString = JsonConvert.SerializeObject(config);
                 using (StreamWriter streamWriter = File.CreateText(@".discordstatsconfig.json"))
                 {
