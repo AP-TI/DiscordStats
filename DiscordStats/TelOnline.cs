@@ -13,7 +13,9 @@ namespace DiscordStats
     public class TelOnline
     {
         public Config Config { get; set; }
+        public DatabaseServer Server { get; set; }
         private int aantalBots = 0;
+
         public TelOnline(Config config)
         {
             Config = config;
@@ -78,15 +80,7 @@ namespace DiscordStats
 
         private void UpdateData(int aantalOnline)
         {
-            MySqlConnection conn = new MySqlConnection(Config.ConnectionString);
-            conn.Open();
-            using (MySqlCommand cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = "INSERT INTO AantalOnline(Aantal, Datum) VALUES(?aantal,?datum)";
-                cmd.Parameters.Add("?aantal", MySqlDbType.Int32).Value = aantalOnline;
-                cmd.Parameters.Add("?datum", MySqlDbType.DateTime).Value = DateTime.Parse(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
-                cmd.ExecuteNonQuery();
-            }
+            Server.UpdateData(Config, aantalOnline);
         }
 
 
