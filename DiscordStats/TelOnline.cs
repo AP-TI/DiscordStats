@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.CSharp.RuntimeBinder;
+using Newtonsoft.Json.Linq;
 
 namespace DiscordStats
 {
@@ -46,12 +47,16 @@ namespace DiscordStats
                 {
                     result = client.DownloadString("https://discordapp.com/api/servers/" + Config.ServerID + "/widget.json?date="+DateTime.Now);
                     dynamic resultJson = JsonConvert.DeserializeObject(result);
-                    Newtonsoft.Json.Linq.JArray jArray = (Newtonsoft.Json.Linq.JArray)resultJson.members;
+                    JArray jArray = (Newtonsoft.Json.Linq.JArray)resultJson.members;
                     foreach(dynamic item in jArray)
                     {
                         try
                         {
-                            if (item.bot == "true")
+                            //if (item.bot == "true")
+                            //{
+                            //    aantalBots++;
+                            //}
+                            if(item.username == "APTI" || item.username == "Groovy")
                             {
                                 aantalBots++;
                             }
@@ -62,9 +67,10 @@ namespace DiscordStats
                             Console.WriteLine(item.username + "geen bot");
                         }
                     }
-                    int aantalOnline = ((Newtonsoft.Json.Linq.JArray)resultJson.members).Count - aantalBots;
+                    aantalBots = 2;
+                    int aantalOnline = ((JArray)resultJson.members).Count - aantalBots;
                     aantalBots = 0;
-                    UpdateData(aantalOnline);
+                    UpdateData(aantalOnline, jArray);
                     Console.WriteLine($"{aantalOnline} - {DateTime.Now}");
                 }
                 catch(WebException wex)
@@ -74,9 +80,9 @@ namespace DiscordStats
             }
         }
 
-        private void UpdateData(int aantalOnline)
+        private void UpdateData(int aantalOnline, JArray jArray)
         {
-            Server.UpdateData(aantalOnline);
+            Server.UpdateData(aantalOnline, jArray);
         }
 
 

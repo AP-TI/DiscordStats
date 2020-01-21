@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
 using System;
 namespace DiscordStats
 {
@@ -9,7 +10,7 @@ namespace DiscordStats
         {
             Config = config;
         }
-        public void UpdateData(int aantalOnline)
+        public void UpdateData(int aantalOnline, JArray jArray)
         {
             MySqlConnection conn = new MySqlConnection(Config.ConnectionString);
             conn.Open();

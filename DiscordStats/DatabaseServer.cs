@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace DiscordStats
 {
     public interface DatabaseServer
     {
-        void UpdateData(int aantalOnline);
+        void UpdateData(int aantalOnline, JArray jArray);
     }
 }
