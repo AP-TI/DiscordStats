@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using MySql.Data;
-using MySql.Data.MySqlClient;
-using MySql.Data.Common;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace DiscordStats
@@ -19,6 +15,7 @@ namespace DiscordStats
         public TelOnline(Config config)
         {
             Config = config;
+            Server = Config.Database == Database.MongoDB ? new MongoServer(Config) : (DatabaseServer)new MySQLServer(Config);
             Task t = Task.Run(async () => {
                 do
                 {
@@ -34,7 +31,6 @@ namespace DiscordStats
             {
                 Console.WriteLine(ex.Message);
             }
-
         }
             
 
@@ -80,7 +76,7 @@ namespace DiscordStats
 
         private void UpdateData(int aantalOnline)
         {
-            Server.UpdateData(Config, aantalOnline);
+            Server.UpdateData(aantalOnline);
         }
 
 

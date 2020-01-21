@@ -8,6 +8,6 @@ namespace DiscordStats
 {
     public interface DatabaseServer
     {
-        void UpdateData(Config config, int aantalOnline);
+        void UpdateData(int aantalOnline);
     }
 }

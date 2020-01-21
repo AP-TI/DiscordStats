@@ -1,17 +1,17 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace DiscordStats
 {
     class MySQLServer : DatabaseServer
     {
-        public void UpdateData(Config config, int aantalOnline)
+        public Config Config { get; set; }
+        public MySQLServer(Config config)
         {
-            MySqlConnection conn = new MySqlConnection(config.ConnectionString);
+            Config = config;
+        }
+        public void UpdateData(int aantalOnline)
+        {
+            MySqlConnection conn = new MySqlConnection(Config.ConnectionString);
             conn.Open();
             using (MySqlCommand cmd = conn.CreateCommand())
             {

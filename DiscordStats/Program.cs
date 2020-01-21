@@ -6,6 +6,7 @@ using System.IO;
 
 namespace DiscordStats
 {
+    public enum Database { MongoDB, MySQL }
     class MainClass
     {
         public static void Main(string[] args)
@@ -17,18 +18,21 @@ namespace DiscordStats
             }
             catch (System.IO.FileNotFoundException)
             {
-                Console.Write("Geef database server IP (meestal localhost): ");
+                Console.Write("Kies database server; MongoDB (1), MySQL (2): ");
+                Database database = Console.ReadLine() == "1" ? Database.MongoDB : Database.MySQL;
+                Console.Write($"Geef {database} server IP (meestal localhost): ");
                 string serverIP = Console.ReadLine();
-                Console.Write("Geef database naam: ");
+                Console.Write($"Geef {database} database naam: ");
                 string databaseNaam = Console.ReadLine();
-                Console.Write("Geef database Uid (meestal root): ");
+                Console.Write($"Geef {database} {(database == Database.MySQL ? "Uid (meestal root)" : "gebruikersnaam")}: ");
                 string uid = Console.ReadLine();
-                Console.Write("Geef datbase wachtwoord: ");
+                Console.Write($"Geef {database} wachtwoord: ");
                 string wachtwoord = WachtwoordInvoer();
                 Console.WriteLine();
                 Console.Write("Geef discord server ID: ");
                 string discordServerID = Console.ReadLine();
-                config = new Config($"Server={serverIP};Database={databaseNaam};Uid={uid};Pwd={wachtwoord};", discordServerID);
+                string connect = database == Database.MongoDB ? $"mongodb://{(uid != "" ? $"{uid}:{wachtwoord}@" : "")}{serverIP}:27017/{databaseNaam}" : $"Server={serverIP};Database={databaseNaam};Uid={uid};Pwd={wachtwoord};";
+                config = new Config(connect, discordServerID, database, databaseNaam);
                 string configString = JsonConvert.SerializeObject(config);
                 using (StreamWriter streamWriter = File.CreateText(@".discordstatsconfig.json"))
                 {
@@ -36,8 +40,6 @@ namespace DiscordStats
                 }
             }
             TelOnline telOnline = new TelOnline(config);
-
-
         }
 
         private static string WachtwoordInvoer()
